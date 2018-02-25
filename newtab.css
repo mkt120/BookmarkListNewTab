@@ -1,0 +1,47 @@
+/**
+ * ブックマーク
+ */
+#bookmark{
+  width: 350px;
+  max-height: 500px;
+  padding: 1px;
+  display: block;
+  background:red;
+}
+
+/**
+ * ブックマークの各要素
+ */
+#div_text{
+  background:white;
+}
+
+/**
+ * タイトルView要素
+ */
+div.bookmarkTitleView {
+  background: skyblue;
+  padding: 3px 3px 3px 8px;
+}
+
+/**
+ * タイトルView内のテキスト要素
+ */
+a.bookmarkTitleTextView {
+  padding: 0px 0px 0px 5px;
+  vertical-align: middle;
+}
+
+a.bookmarkTitleIconView {
+  padding: 0px 2px 0px 2px;
+  vertical-align: middle;
+  background: gray;
+}
+
+div.bookmarkChildViews {
+  padding: 0px 0px 0px 10px;
+}
+
+div.bookmarkChildView {
+  padding: 5px 0px 5px 5px;
+}
