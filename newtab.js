@@ -37,6 +37,8 @@ chrome.bookmarks.getTree(function(bookmark) {
   }
 });
 
+
+
 ////////////////////////////////////////////
 // ブックマークツリーを作る
 ////////////////////////////////////////////
@@ -45,8 +47,9 @@ function createBookmarks(document, bookmarkTreeNode) {
 
   var parent = document.createElement("div");
   parent.setAttribute("class", CLASS_BOOKMARK_LIST_VIEW);
-  
-  var parentDiv = createTitleView(document, bookmarkTreeNode, 'true');
+  var id = bookmarkTreeNode['id'];
+  var isOpen = localStorage[id];
+  var parentDiv = createTitleView(document, bookmarkTreeNode, isOpen);
   parent.appendChild(parentDiv);
 
   // 子View要素の親
@@ -67,6 +70,12 @@ function createBookmarks(document, bookmarkTreeNode) {
   }
   parent.appendChild(childViews);
 
+  if (isOpen == 'true') {
+      childViews.style.display = "";
+  } else {
+      childViews.style.display = "none";
+  }
+
   // クリックリスナー
   parentDiv.addEventListener("click", function(){
     var element= parentDiv.getElementsByClassName(CLASS_BOOKMARK_TITLE_ICON_VIEW)[0];
@@ -80,6 +89,8 @@ function createBookmarks(document, bookmarkTreeNode) {
       element.innerHTML = TITLE_VIEW_ICON_CLOSE;
       childViews.style.display = "";
     }
+    var id = parentDiv.getAttribute('id');
+    localStorage[id] = isOpen;
   });
   return parent;
 }
@@ -92,6 +103,7 @@ function createTitleView(document, bookmarkTreeNode, isOpen) {
   var div = document.createElement("div");
   div.setAttribute("name", bookmarkTreeNode['title']);
   div.setAttribute("class", CLASS_BOOKMARK_TITLE_VIEW);
+  div.setAttribute("id", bookmarkTreeNode['id']);
 
   // アイコン
   var span = document.createElement("span");
