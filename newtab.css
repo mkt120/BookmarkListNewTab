@@ -12,7 +12,7 @@
 /**
  * ブックマークの各要素
  */
-#div_text{
+div.bookmarkListView {
   background:white;
 }
 

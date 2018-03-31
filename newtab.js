@@ -5,6 +5,7 @@ const STYLE_VETICAL_ALIGN =  'middle';
 const TITLE_VIEW_ICON_OPEN = "＋";
 const TITLE_VIEW_ICON_CLOSE = "－";
 
+const CLASS_BOOKMARK_LIST_VIEW = "bookmarkListView";
 const CLASS_BOOKMARK_TITLE_VIEW = "bookmarkTitleView";
 const CLASS_BOOKMARK_CHLID_VIEWS = "bookmarkChildViews";
 const CLASS_BOOKMARK_TITLE_ICON_VIEW = "bookmarkTitleIconView";
@@ -36,15 +37,16 @@ chrome.bookmarks.getTree(function(bookmark) {
   }
 });
 
+////////////////////////////////////////////
 // ブックマークツリーを作る
+////////////////////////////////////////////
 function createBookmarks(document, bookmarkTreeNode) {
   console.log("createBookmarks");
+
   var parent = document.createElement("div");
-
-  var parentDiv = createTitleView(document, bookmarkTreeNode['title'], 'false');
-  parentDiv.setAttribute("name", bookmarkTreeNode['title']);
-  parentDiv.setAttribute("class", CLASS_BOOKMARK_TITLE_VIEW);
-
+  parent.setAttribute("class", CLASS_BOOKMARK_LIST_VIEW);
+  
+  var parentDiv = createTitleView(document, bookmarkTreeNode, 'true');
   parent.appendChild(parentDiv);
 
   // 子View要素の親
@@ -64,45 +66,47 @@ function createBookmarks(document, bookmarkTreeNode) {
     childViews.appendChild(child);
   }
   parent.appendChild(childViews);
-  parent.setAttribute("id","div_text");
-  parent.setAttribute("class","bookmarkListView");
 
   // クリックリスナー
   parentDiv.addEventListener("click", function(){
-    // fixme: アイコン部分だけ差し替えたい...
-    var title = parentDiv.getAttribute("name");
-    parentDiv.innerHTML = null;
+    var element= parentDiv.getElementsByClassName(CLASS_BOOKMARK_TITLE_ICON_VIEW)[0];
     var isOpen;
     if (childViews.style.display != "none") {
-      isOpen = 'true';
+      isOpen = 'false';
+      element.innerHTML = TITLE_VIEW_ICON_OPEN;
       childViews.style.display = "none";
     } else {
-      isOpen = 'false';
+      isOpen = 'true';
+      element.innerHTML = TITLE_VIEW_ICON_CLOSE;
       childViews.style.display = "";
     }
-    parentDiv.appendChild(createTitleView(document, bookmarkTreeNode['title'], isOpen));
   });
   return parent;
 }
 
+////////////////////////////////////////////
 // タイトルのViewを作る
-function createTitleView(document, title, isOpen) {
+////////////////////////////////////////////
+function createTitleView(document, bookmarkTreeNode, isOpen) {
   // root
   var div = document.createElement("div");
+  div.setAttribute("name", bookmarkTreeNode['title']);
+  div.setAttribute("class", CLASS_BOOKMARK_TITLE_VIEW);
+
   // アイコン
   var span = document.createElement("span");
   var a = document.createElement("a");
   if (isOpen == 'true') {
-    a.innerHTML = TITLE_VIEW_ICON_OPEN;
-  } else {
     a.innerHTML = TITLE_VIEW_ICON_CLOSE;
+  } else {
+    a.innerHTML = TITLE_VIEW_ICON_OPEN;
   }
   a.setAttribute("class", CLASS_BOOKMARK_TITLE_ICON_VIEW);
   span.appendChild(a);
   
   // タイトル
   a = document.createElement("a");
-  a.innerHTML = title;
+  a.innerHTML = bookmarkTreeNode['title'];
   a.setAttribute("class", CLASS_BOOKMARK_TITLE_TEXT_VIEW);
   span.appendChild(a);
 
@@ -111,7 +115,9 @@ function createTitleView(document, title, isOpen) {
   return div;
 }
 
+////////////////////////////////////////////
 // 子ブックマークを作る
+////////////////////////////////////////////
 function createChild(document, child) {
   var title = child['title'];
   var url = child['url'];
